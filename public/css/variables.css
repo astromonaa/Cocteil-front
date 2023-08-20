@@ -1,0 +1,157 @@
+:root {
+  --index: calc(1vw + 1vh)
+}
+
+* {
+  font-family: 'Roboto', serif;
+  font-weight: 300;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+body {
+  background-color: #FFFDF5;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+h1, h2, h3 {
+  color: #121212;
+  line-height: 87.305%;
+  font-size: 40px;
+}
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+li {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+.cursive {
+  font-size: 40px;
+  font-weight: 400;
+  font-family: 'Bad Script', cursive;
+  color: #514A7E;
+  display: block;
+}
+
+.translate {
+  transform: translate3d(300px, 0px, 0px) rotateY(-15deg);
+}
+
+.full {
+  transform: translate3d(430px, 0px, 0px) rotateY(-15deg);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 35px;
+  width: 100%;
+}
+
+
+.mobile-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  row-gap: 30px;
+  column-gap: 55px;
+}
+
+.page-enter-active,
+.page-leave-active,
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.3s;
+}
+
+.page-enter-from,
+.page-leave-to,
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+.flex {
+  display: flex;
+}
+.flex-column {
+  flex-direction: column;
+}
+.gap-20 {
+  gap: 20px
+}
+.gap-30 {
+  gap: 30px
+}
+.gap-5 {
+  gap: 5px;
+}
+
+.t-m {
+  font-size: 25px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.items-center {
+  align-items: center;
+}
+
+.px-10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.px-135 {
+  padding-left: 135px;
+  padding-right: 135px;
+}
+
+
+.mt-15 {
+  margin-top: 15px;
+}
+.mt-22 {
+  margin-top: 22px;
+}
+.mt-30 {
+  margin-top: 30px;
+}
+.mb-30 {
+  margin-bottom: 30px;
+}
+.mb-50 {
+  margin-bottom: 50px;
+}
+.mb-100 {
+  margin-bottom: 100px;
+}
+
+.pointer {
+  cursor: pointer
+}
+
+
+
+.font-12 {
+  font-size: 12px;
+}
