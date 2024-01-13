@@ -2,6 +2,7 @@
 
 import Button from "~/components/UI/Button.vue";
 import {Swiper, SwiperSlide} from "swiper/vue";
+import useGallery from "~/hooks/useGallery";
 
 
 import 'swiper/css';
@@ -10,10 +11,22 @@ import "swiper/css/free-mode"
 import "swiper/css/navigation"
 import "swiper/css/thumbs"
 
-const {isMobile} = useDevice()
-
-// import required modules
 import {FreeMode, Navigation, Thumbs, Pagination} from 'swiper/modules';
+
+
+interface IProps {
+  images: string[] | undefined
+  name: string;
+}
+
+
+const props = defineProps<IProps>()
+
+const images = props.images?.map(i => ({src: i, thumbSrc: i}))
+
+const {isMobile} = useDevice()
+const {show} = useGallery(images)
+
 
 const modules = computed(() => isMobile ? [FreeMode, Navigation, Pagination] : [FreeMode, Navigation, Thumbs])
 
@@ -36,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="['product-gallery', {'mobile-product-gallery': isMobile}]">
+  <div :class="['product-gallery', {'mobile-product-gallery': isMobile}]" data-not-lazy>
     <component
         :is="slider"
         :slides-per-view="1"
@@ -50,23 +63,10 @@ onMounted(() => {
         :auto-destroy="true"
         :delete-instance-on-destroy="true"
         :cleanup-styles-on-destroy="true"
-        :pagination="{
-           dynamicBullets: true,
-           clickable: true
-        }"
         class="mySwiper2"
     >
-      <SwiperSlide :class="{'mobile-slide': isMobile}">
-        <img src="/img/product2.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide :class="{'mobile-slide': isMobile}">
-        <img src="/img/product3.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide :class="{'mobile-slide': isMobile}">
-        <img src="/img/product4.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide :class="{'mobile-slide': isMobile}">
-        <img src="/img/product5.jpg" alt="image">
+      <SwiperSlide :class="{'mobile-slide': isMobile}" v-for="(slide, idx) in images" :key="slide.src">
+        <img :src="slide.src" :alt="name" @click="show(idx)" :title="name">
       </SwiperSlide>
       <button class="slider-btn product-item-next" v-if="!isMobile">
         <SvgLoader width="85" height="47" icon-name="arrow-right"/>
@@ -83,17 +83,8 @@ onMounted(() => {
         :modules="modules"
         class="mySwiper"
     >
-      <SwiperSlide>
-        <img src="/img/product2.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/img/product3.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/img/product4.jpg" alt="image">
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/img/product5.jpg" alt="image">
+      <SwiperSlide v-for="slide in images" :key="slide.src">
+        <img :src="slide.src" :alt="name" :title="name">
       </SwiperSlide>
     </component>
   </div>

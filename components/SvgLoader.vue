@@ -7,16 +7,37 @@
     height: String,
     iconName: String,
   })
+  const domain = computed(() => process.client ? `${window?.location?.protocol}//${window?.location?.hostname}:${window?.location?.port}` : '')
   const url = computed(() => `/img/svg/${props.width}x${props.height}/${props.iconName}.svg`)
 
-  onMounted(async () => {
-    const domain = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
-    const response = await fetch(domain + url.value)
+  const cacheName = `${domain.value}-svg-cache`
+
+  const useCache = async () => {
+    const fullUrl = domain.value + url.value
+
+    const cached = await caches.open(cacheName)
+    const cachedResponse = await cached.match(fullUrl)
+
+    if (cachedResponse && cachedResponse.ok) {
+      return await cachedResponse.text()
+    }
+
+    const response = await fetch(fullUrl)
+
     let data = await response?.text()
     data = data?.replace(/<svg\b([\s\S]*?)>/g, '')
-    svg.value = data?.slice(0, data.length - 7)
-  })
+    data = data?.slice(0, data.length - 7)
 
+    const cachesStorage = await caches.open(cacheName)
+    await cachesStorage.put(fullUrl, new Response(data))
+
+    return data
+  }
+
+  onMounted(async () => {
+    if (!process.client) return
+    svg.value = await useCache()
+  })
 
 
 </script>

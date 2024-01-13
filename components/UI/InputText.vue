@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {computed} from "vue";
+import {computed, watch} from "vue";
 
 interface IProps {
   id: string;
@@ -8,25 +8,45 @@ interface IProps {
   label?: string;
   placeholder?: string;
   centered?: boolean
+  modelValue: string;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   type: 'text',
   label: 'Input',
-  placeholder: 'placeholder',
-  centered: false
+  placeholder: '',
+  centered: false,
 })
+
+const emit = defineEmits(['update:modelValue'])
+
+const onInput = (event:Event<HTMLInputElement>) => emit('update:modelValue', event.target.value) 
 
 const {isMobile} = useDevice()
 
 const labelWidth = computed(() => props.centered ? '100%' : 'auto')
 const labelSize = computed(() => isMobile ? '10px' : '16px')
 
+const isValid = ref(false)
+
+
+watch(() => props.modelValue, n => {
+  isValid.value = props.type !== 'email' ? n.trim().length > 0 : n.trim().includes('@')
+})
 </script>
 
 <template>
   <div class="input-wrapper">
-    <input :type="type" :id="id" required :placeholder="placeholder" autocomplete="new-password">
+    <input
+      :type="type"
+      :id="id"
+      :placeholder="placeholder"
+      :value="modelValue"
+      :data-valid="isValid"
+      autocomplete="new-password"
+      v-bind="$attrs"
+      @input="onInput"
+    >
     <label :for="id">{{ label }}</label>
   </div>
 </template>

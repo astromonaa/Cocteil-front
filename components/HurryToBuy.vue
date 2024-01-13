@@ -10,7 +10,7 @@ const {isMobile} = useDevice()
 </script>
 
 <template>
-  <div v-if="isMobile" class="mobile-wrapper">
+  <div v-if="isMobile" class="mobile-wrapper start-pos" v-showBlock>
     <h2>Успей купить!</h2>
     <span class="cursive">Акции</span>
     <section class="mobile-catalog" style="margin-top: 60px">
@@ -22,10 +22,10 @@ const {isMobile} = useDevice()
     <Button is-arrow compress style="margin: 30px auto 0">Смотреть еще</Button>
     <CircleDecoration size="small" decoration="arrow" class="to-up" />
   </div>
-  <div v-else class="wrapper">
+  <div v-else class="wrapper start-pos" v-showBlock>
     <h2>Успей купить!</h2>
     <span class="cursive">Акции</span>
-    <ProductRecommendationSystem style="margin-top: 60px"/>
+<!--    <ProductRecommendationSystem style="margin-top: 60px"/>-->
   </div>
 </template>
 

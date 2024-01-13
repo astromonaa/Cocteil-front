@@ -4,7 +4,8 @@ interface IProps {
   label?: string;
   placeholder?: string;
   rows?: number;
-  cols?: number
+  cols?: number;
+  modelValue: string;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
@@ -13,10 +14,17 @@ const props = withDefaults(defineProps<IProps>(), {
   rows: 3,
   cols: 3
 })
+
+const emit = defineEmits(['update:modelValue'])
+
+const onInput = (event:KeyboardEvent<HTMLTextAreaElement>) => {
+  const {value} = event.target
+  emit('update:modelValue', value)
+}
 </script>
 
 <template>
-  <textarea :placeholder="placeholder" :rows="rows" style="width: 100%;"></textarea>
+  <textarea @input="onInput" :value="modelValue" :placeholder="placeholder" :rows="rows" style="width: 100%;"></textarea>
 </template>
 
 <style scoped lang="scss">

@@ -47,7 +47,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="['wrapper', {'mobile-wrapper': isMobile}]">
+  <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <h2 :class="{'mobile-title': isMobile}">Почему выбирают нас?</h2>
     <section class="mobile-swiper" v-if="isMobile">
       <component

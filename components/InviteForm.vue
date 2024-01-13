@@ -7,7 +7,7 @@ const{isMobile} = useDevice()
 </script>
 
 <template>
-  <div :class="['wrapper', {'mobile-wrapper': isMobile}]">
+  <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <form action="#" class="form">
       <h3>Приглашаем  к сотрудничеству производителей и поставщиков одежды, обуви и аксессуаров</h3>
       <InputText class="form-input" label="Ваше имя" placeholder="Ваше имя" id="name" :centered="isMobile"/>

@@ -20,7 +20,7 @@ interface Props {
   title?: string;
   hideArrows?: boolean;
 }
-const slider = shallowRef()
+const slider = shallowRef<any>('div')
 
 defineProps<Props>()
 

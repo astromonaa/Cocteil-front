@@ -3,15 +3,35 @@
 import ProductItem from "~/components/products/ProductItem.vue";
 import {useSidebarStore} from "~/store/sidebarStore";
 import {storeToRefs} from 'pinia'
-import CircleDecoration from "~/components/UI/CircleDecoration.vue";
+import type {IProduct} from "~/types/types";
+
+const {$app} = useNuxtApp()
 
 const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 
 const {isMobile} = useDevice()
 
+const products = ref<Ref<IProduct[]> | []>([])
+const isLoading = ref(false)
+const maxCount = ref(0)
+
+const fetchProducts = async () => {
+  try {
+    const {rows, count} = await $app._apiPack._productsApi.fetchProducts()
+    products.value = rows
+    maxCount.value = count;
+  }catch (e) {
+    console.log(e)
+  }finally {
+    isLoading.value = false
+  }
+}
+
 definePageMeta({
   layout: 'without-footer-layout',
 })
+
+onMounted(fetchProducts)
 
 </script>
 
@@ -22,20 +42,15 @@ definePageMeta({
       <h1>Блузки и рубашки для женщин</h1>
       <LazyCatalogSortBlock/>
       <section>
-        <LazyCatalogFilters/>
+        <LazyCatalogFilters :products="products"/>
         <div class="products-grid">
-          <ProductItem/>
-          <ProductItem/>
-          <ProductItem/>
-          <ProductItem/>
-          <ProductItem/>
-          <ProductItem/>
+          <ProductItem v-for="product in products" :product="product"/>
         </div>
       </section>
-      <LazyUILoadMoreBtn/>
+      <LazyUILoadMoreBtn v-if="products?.length !== maxCount"/>
     </div>
     <div v-else>
-      <div class="mobile-catalog">
+      <div class="mobile-catalog start-pos" v-showBlock>
         <ProductItem/>
         <ProductItem/>
         <ProductItem/>
@@ -43,7 +58,13 @@ definePageMeta({
         <ProductItem/>
         <ProductItem/>
       </div>
-      <LazyUICircleDecoration class="to-up" size="small" decoration="arrow" direction="up"/>
+      <LazyUICircleDecoration
+        v-if="products?.length !== maxCount"
+        class="to-up"
+        size="small"
+        decoration="arrow"
+        direction="up"
+      />
     </div>
   </main>
 </template>

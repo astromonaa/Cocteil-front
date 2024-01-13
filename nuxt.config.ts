@@ -13,8 +13,22 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     '@pinia/nuxt',
     '@nuxtjs/device',
-    'nuxt-lazy-load'
+    'nuxt-lazy-load',
   ],
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.API_URL
+    }
+  },
+  vite: {
+    esbuild: {
+      tsconfigRaw: {
+        compilerOptions: {
+          experimentalDecorators: true,
+        },
+      },
+    },
+  },
   device: {
     refreshOnResize: true
   },
@@ -26,6 +40,11 @@ export default defineNuxtConfig({
     layoutTransition: {
       name: 'layout',
       mode: 'out-in' // default
+    },
+    head: {
+      htmlAttrs: {
+        lang: 'ru'
+      }
     }
   },
   lazyLoad: {
@@ -35,15 +54,15 @@ export default defineNuxtConfig({
     iframes: true,
     native: false,
     directiveOnly: false,
-
+  
     defaultImage: '/img/default-image.png',
-
+  
     loadingClass: false,
     loadedClass: false,
     appendClass: false,
-
+  
     observerConfig: {
       // See IntersectionObserver documentation
     }
-  }
+  },
 })

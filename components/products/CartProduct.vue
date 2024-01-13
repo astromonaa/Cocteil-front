@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type {IProduct} from "~/types/types";
+
+interface IProps {
+  product: IProduct
+}
+defineProps<IProps>()
 
 </script>
 
@@ -9,8 +15,7 @@
     </div>
     <div class="description">
       <div class="product-name">
-        <span>Платье женское </span>
-        <small>Арт 09456784</small>
+        <span> {{product.name}} </span>
       </div>
       <div class="characteristics">
         <small>Цвет: синий</small>

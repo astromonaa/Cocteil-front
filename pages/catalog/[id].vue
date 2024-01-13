@@ -7,95 +7,136 @@ import ProductRecommendationSystem from "~/components/products/ProductRecommenda
 
 import {useSidebarStore} from "~/store/sidebarStore";
 import {storeToRefs} from 'pinia'
+import useProductItem from "~/hooks/useProductItem";
+import Loader from "~/components/UI/Loader.vue";
+import {watch} from "vue";
+
 
 const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 
 const {back} = useRouter()
 const {isMobile} = useDevice()
 
+
+const colorError = ref(false)
+const sizeError = ref(false)
+
+const {images, price, product, sizes, handleAddToCart, handleLike, isLoading, chosenSize, chosenColor} = useProductItem()
+
 definePageMeta({
   layout: 'without-footer-layout',
+  middleware: ['product-page']
 })
 
+watch([chosenColor, chosenSize], ([c, s]) => {
+  colorError.value = !c;
+  sizeError.value = !s
+})
+
+const onAddToCart = () => {
+  if (!chosenColor.value) colorError.value = true
+  if (!chosenSize.value) sizeError.value = true
+
+  if (colorError.value || sizeError.value) return;
+  handleAddToCart()
+}
 
 </script>
 
 <template>
-  <main>
+  <main v-if="product">
     <div :class="['product-page-wrapper',{translate: isOpen, full: fullOpen}]" v-if="!isMobile">
       <div class="product-page">
-        <div class="product-page-top">
+        <div class="product-page-top start-pos" v-showBlock>
           <CircleDecoration decoration="arrow" direction="left" @click="back"/>
-          <span>Главная/ Женщинам /Блузки и рубашки </span>
+          <span>Главная/ {{product.Category.name}} /{{product.SubCategory?.name}} </span>
         </div>
-        <div class="product-name">
-          <h1>Блузка женская</h1>
-          <span>Арт 06578990-086</span>
+        <div class="product-name start-pos" v-showBlock>
+          <h1>{{product.name}}</h1>
         </div>
         <div class="product-info">
-          <ProductPageGallery/>
-          <div class="product-meta">
-            <span class="product-price">50.00 б.р.</span>
+          <ProductPageGallery
+            :images="images"
+            :name="product.name"
+            class="start-pos"
+            v-showBlock
+          />
+          <div class="product-meta start-pos" v-showBlock>
+            <span class="product-price">{{price}}</span>
             <span class="title">Цвета</span>
             <section class="colors">
-              <div class="colors-item"></div>
-              <div class="colors-item"></div>
-              <div class="colors-item"></div>
-              <div class="colors-item"></div>
-              <div class="colors-item"></div>
+              <div
+                v-for="color in product.colors"
+                :key="color"
+                :style="{background: color, borderWidth: color === '#fff' ? '1px' : 0}"
+                :class="['colors-item', {error: colorError}, {'active-radius': color === chosenColor}]"
+                @click="chosenColor = color"
+              ></div>
             </section>
             <span class="title">Размер</span>
             <section class="sizes">
-              <div class="sizes-item">
-                <span>S</span>
-                <small>42</small>
-              </div>
-              <div class="sizes-item">
-                <span>M</span>
-                <small>44</small>
-              </div>
-              <div class="sizes-item">
-                <span>L</span>
-                <small>46</small>
-              </div>
-              <div class="sizes-item">
-                <span>XL</span>
-                <small>48</small>
+              <div
+                v-for="item in sizes"
+                :key="item.size"
+                :class="['sizes-item', {error: sizeError}, {active: chosenSize === item.size}]"
+                @click="chosenSize = item.size"
+              >
+                <span>{{item.sign}}</span>
+                <small>{{item.size}}</small>
               </div>
             </section>
             <NuxtLink to="/sizestable" class="link">Таблица размеров</NuxtLink>
             <div class="control-btns">
-              <Button is-mini>
+              <Button
+                v-if="!product.isInCart"
+                is-mini
+                @click.prevent="onAddToCart"
+              >
                 <span>В корзину</span>
                 <template #icon>
                   <LazySvgLoader width="20" height="20" icon-name="cart-white"/>
                 </template>
               </Button>
-              <SvgLoader class="like" width="20" height="20" icon-name="like"/>
+              <Button
+                v-else
+                is-mini
+                class="is-in-cart"
+              >Товар в козине
+              </Button>
+              <SvgLoader
+                v-if="!product.favorite"
+                class="like"
+                width="20"
+                height="20"
+                icon-name="like"
+                @click.prevent="handleLike"
+              />
+              <div v-else class="liked" @click.prevent="handleLike"></div>
             </div>
             <div class="rating">
-              <LazySvgLoader width="10" height="10" icon-name="star"/>
-              <LazySvgLoader width="10" height="10" icon-name="star"/>
-              <LazySvgLoader width="10" height="10" icon-name="star"/>
-              <LazySvgLoader width="10" height="10" icon-name="star"/>
-              <LazySvgLoader width="10" height="10" icon-name="star"/>
+              <LazySvgLoader
+                v-for="r in 5" :name="r+' '+product.rating"
+                :key="r" width="10" height="10"
+                :icon-name="r <= product.rating ? 'star' : 'star-def'"
+              />
             </div>
             <div class="more-info-links">
-              <NuxtLink class="link" to="#">Смотреть все отзывы</NuxtLink>
-              <NuxtLink class="link" to="#">Добавить отзыв</NuxtLink>
+              <NuxtLink class="link" :to="`/reviews/${$route.params.id}`">Смотреть все отзывы</NuxtLink>
+              <NuxtLink class="link" :to="`/reviews/${$route.params.id}`">Добавить отзыв</NuxtLink>
             </div>
             <span class="title">Описание</span>
-            <p class="product-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad animi, corporis
-              delectus enim expedita fuga obcaecati repudiandae saepe sit unde!</p>
+            <p class="product-description">{{product.description}}</p>
           </div>
         </div>
         <Reviews class="reviews" title="Отзывы о товаре"/>
       </div>
-      <ProductRecommendationSystem
-          hide-arrows
-          title="С этим товаром также покупают"
-          style="margin-left: 135px; margin-top: 60px"
-      />
+      <!--      <ProductRecommendationSystem-->
+      <!--          v-showBlock-->
+      <!--          class="start-pos"-->
+      <!--          hide-arrows-->
+      <!--          title="С этим товаром также покупают"-->
+      <!--          style="margin-left: 135px; margin-top: 60px"-->
+      <!--      />-->
     </div>
 
     <!-- MOBILE-->
@@ -113,11 +154,12 @@ definePageMeta({
         <div class="colors product-meta-item">
           <span class="mobile-title">Цвета</span>
           <div class="colors">
-            <div class="colors-item"></div>
-            <div class="colors-item"></div>
-            <div class="colors-item"></div>
-            <div class="colors-item"></div>
-            <div class="colors-item"></div>
+            <div
+              v-for="color in product.colors"
+              :key="color"
+              :style="{background: color}"
+              class="colors-item"
+            ></div>
           </div>
         </div>
         <div class="sizes product-meta-item">
@@ -155,8 +197,8 @@ definePageMeta({
           <SvgLoader width="10" height="10" icon-name="star"/>
         </div>
         <div class="more-info-links">
-          <LazyNuxtLink class="link" to="#">Смотреть все отзывы</LazyNuxtLink>
-          <LazyNuxtLink class="link" to="#">Добавить отзыв</LazyNuxtLink>
+          <LazyNuxtLink class="link" :to="`/reviews/${$route.params.id}`">Смотреть все отзывы</LazyNuxtLink>
+          <LazyNuxtLink class="link" :to="`/reviews/${$route.params.id}`">Добавить отзыв</LazyNuxtLink>
         </div>
         <div class="btns">
           <Button is-mini style="padding: 8px 0; width: 45%">
@@ -172,6 +214,13 @@ definePageMeta({
       </div>
       <ProductRecommendationSystem title="С этим товаром покупают" hide-arrows/>
     </div>
+  </main>
+  <Loader style="margin-top: 50%; transform: translate(-50%, -50%)" v-else-if="isLoading"/>
+  <main v-else>
+    <b class="not-found">
+      Товар не найден
+      <NuxtLink to="/">Вернуться на главную</NuxtLink>
+    </b>
   </main>
 </template>
 
@@ -203,6 +252,7 @@ definePageMeta({
   display: flex;
   gap: 11px;
   align-items: flex-end;
+  max-width: 50%;
 
   h1 {
     color: #121212;
@@ -235,28 +285,8 @@ definePageMeta({
       width: 30px;
       height: 30px;
       border-radius: 50%;
-
-      &:first-child {
-        border: 0.5px solid #000000;
-        background: #fff;
-      }
-
-      &:nth-child(2) {
-        background: #000000;
-      }
-
-      &:nth-child(3) {
-        background: #1FA68E;
-      }
-
-      &:nth-child(4) {
-        background: #DC39CC;
-      }
-
-      &:nth-child(5) {
-        background: #FFF385;
-      }
-
+      border-style: solid;
+      border-color: black;
     }
   }
 
@@ -317,6 +347,7 @@ definePageMeta({
   .like {
     width: 37px;
     height: 37px;
+    position: relative;
   }
 
   .rating {
@@ -418,6 +449,55 @@ definePageMeta({
     .link {
       margin: 0;
     }
+  }
+}
+
+.is-in-cart {
+  background: orange;
+  &:hover {
+    background: orange;
+  }
+}
+
+.liked {
+  width: 37px;
+  height: 37px;
+  background: url(../../public/img/heart-red.jpeg);
+  background-size: cover;
+}
+
+.rating-active path {
+  fill: red;
+}
+
+.error {
+  color: red!important;
+  border: 1.5px solid red!important;
+}
+@mixin active() {
+  transform: scale(1.01);
+  -webkit-box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    backdrop-filter: blur(20px);
+  }
+}
+.active {
+  @include active()
+}
+
+.active-radius {
+  @include active();
+  &:before {
+    border-radius: 50%;
   }
 }
 </style>

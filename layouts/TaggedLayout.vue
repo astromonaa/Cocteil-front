@@ -4,13 +4,20 @@ import {useSidebarStore} from "~/store/sidebarStore";
 import CircleDecoration from "~/components/UI/CircleDecoration.vue";
 import LoadMoreBtn from "~/components/UI/LoadMoreBtn.vue";
 import useMobileToolbar from "~/hooks/useMobileToolbar";
+import {computed} from "vue";
 
 const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 const route = useRoute()
 
-const pageHead = computed(() => route.path === '/viewed' ? 'Просмотренные товары' : 'Избранное')
+const getPageHead = () => ({
+  '/viewed': 'Просмотренные товары',
+  '/favorites': 'Избранное',
+  '/bonuses': 'Бонусы'
+}[route.path])
 
 const {isMobile} = useDevice()
+
+const isBonusesPage = computed(() => route.path === '/bonuses')
 
 const toolbar = useMobileToolbar()
 </script>
@@ -27,12 +34,12 @@ const toolbar = useMobileToolbar()
        :is-search-input="toolbar.isSearchInput.value"
     />
     <div :class="['tagged-wrapper',{translate: isOpen, full: fullOpen}]">
-      <h1 v-if="!isMobile">{{ pageHead }}</h1>
-      <div :class="isMobile ? 'px-10' : 'content-block'">
+      <h1 v-if="!isMobile" class="start-pos" v-showBlock>{{ getPageHead() }}</h1>
+      <div :class="isMobile ? 'px-10 start-pos' : 'content-block start-pos'" v-showBlock>
         <LazyUserMenu v-if="!isMobile" position="left"/>
-        <LazyUICircleDecoration v-if="!isMobile" decoration="arrow" class="to-up" size="large"/>
+<!--        <LazyUICircleDecoration v-if="!isMobile && !isBonusesPage" decoration="arrow" class="to-up" size="large"/>-->
         <slot/>
-        <LazyUILoadMoreBtn v-if="!isMobile"/>
+<!--        <LazyUILoadMoreBtn v-if="!isMobile && !isBonusesPage"/>-->
       </div>
     </div>
   </div>
@@ -40,7 +47,7 @@ const toolbar = useMobileToolbar()
 
 <style scoped lang="scss">
 .container {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .content-block {

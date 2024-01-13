@@ -68,31 +68,31 @@ const isModal = ref(false)
 </template>
 
 <style scoped lang="scss">
-  main {
-    overflow-x: hidden;
-    padding-bottom: 50px;
-  }
-  .reviews {
-    transform-origin: 0 50% 0;
-    transform-style: preserve-3d;
-    transition: all 0.5s ease 0s;
-  }
-  .reviews-content .review:nth-child(even) {
-    align-self: flex-end;
-  }
-  .reviews-content .review:nth-child(odd) {
-    align-self: flex-start;
-  }
+main {
+  overflow-x: hidden;
+  padding-bottom: 50px;
+}
+.reviews {
+  transform-origin: 0 50% 0;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease 0s;
+}
+.reviews-content .review:nth-child(even) {
+  align-self: flex-end;
+}
+.reviews-content .review:nth-child(odd) {
+  align-self: flex-start;
+}
 
-  .btn-m {
-    position: fixed;
-    bottom: 75px;
-    right: 10px;
-  }
-  .btn-d {
-    margin-left: auto;
-  }
-  .title-s {
-    font-size: 25px;
-  }
+.btn-m {
+  position: fixed;
+  bottom: 75px;
+  right: 10px;
+}
+.btn-d {
+  margin-left: auto;
+}
+.title-s {
+  font-size: 25px;
+}
 </style>

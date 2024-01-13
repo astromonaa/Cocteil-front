@@ -4,6 +4,7 @@ import HuryToBuy from "~/components/HurryToBuy.vue";
 import Reviews from "~/components/reviews/Reviews.vue"
 import FAQ from "~/components/FAQ.vue";
 
+
 </script>
 
 <template>
@@ -15,12 +16,13 @@ import FAQ from "~/components/FAQ.vue";
     <FAQ/>
     <Cooperation/>
     <InviteForm/>
+    <Chat/>
   </main>
 </template>
 
 <style scoped>
 main {
-  overflow-x: hidden;
+  overflow: hidden;
   flex: 1 1 auto;
 }
 

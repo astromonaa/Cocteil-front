@@ -3,26 +3,31 @@ import {ref} from 'vue'
 import SvgLoader from "~/components/SvgLoader.vue";
 import {useSidebarStore} from "~/store/sidebarStore";
 import {categories} from "~/utils/utils";
-import {Category} from "~/types/types";
+import type {Category} from "~/types/types";
+import Close from "~/components/UI/Close.vue";
+
+const {isMobile} = useDevice()
+const openedMenuWidth = computed(() => isMobile ? '100vw!important' : 'auto')
 
 const {push} = useRouter()
 
 const sideBarStore = useSidebarStore()
 
 const {toggleOpen} = sideBarStore
-
 const chosenCategory = ref()
-const open = ref(false)
 
+const open = ref(false)
+const mobileOpen = ref(false)
 const checkboxRef = ref()
+
 
 const choseCategory = async (category:Category) => {
   chosenCategory.value = category
   toggleOpen(true, !!category.subcategories?.length)
 }
-const toggleSidebar = (event:Event) => {
+const toggleSidebar = () => {
   chosenCategory.value = {}
-  const checked = (event.target as HTMLInputElement).checked
+  const checked = checkboxRef.value.checked;
   toggleOpen(checked, false)
   checked
       ? setTimeout(() => open.value = checked, 300)
@@ -36,15 +41,25 @@ const navigateToMain = () => {
   checkboxRef.value.checked = false
   push('/')
 }
+
+const toggleMenuOpen = () => {
+  mobileOpen.value = !mobileOpen.value
+  chosenCategory.value = {}
+}
+
+defineExpose({toggleMenuOpen})
+
+
 </script>
 
 <template>
-  <div class="sidebar-wrapper">
-    <input ref="checkboxRef" type="checkbox" id="sidebar-check" @change="toggleSidebar($event)">
-    <label for="sidebar-check">
+  <div :class="['sidebar-wrapper', {'mobile-sidebar': isMobile}]">
+    <Close v-if="isMobile" style="position: absolute; right: 15px; top: 15px" @click="toggleMenuOpen"/>
+    <input ref="checkboxRef" type="checkbox" id="sidebar-check" @change="toggleSidebar">
+    <label for="sidebar-check" v-if="!isMobile">
       <SvgLoader width="36" height="36" icon-name="burger-menu"/>
     </label>
-    <div :class="['sidebar', {open: open}]">
+    <div :class="['sidebar', {open: open, 'mobile-open': mobileOpen}]">
       <img src="/img/logo.png" alt="Логотип" @click="navigateToMain">
       <section class="categories">
         <ul>
@@ -66,13 +81,14 @@ const navigateToMain = () => {
 <style scoped lang="scss">
 $sidebar-width: 280px;
 $opened-subcategories-width: 195px;
+
 .sidebar-wrapper {
   position: absolute;
   height: 100vh;
   max-height: 855px;
   left: 9.5%;
   top: 66.5%;
-  width: max-content;
+  width: min-content;
 
   .sidebar {
     height: 100%;
@@ -96,7 +112,7 @@ $opened-subcategories-width: 195px;
     }
   }
   .open {
-    width: auto;
+    width: v-bind(openedMenuWidth);
   }
 }
 
@@ -131,4 +147,15 @@ input {
 .opened {
   width: $opened-subcategories-width;
 }
+
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-height: 100%;
+}
+.mobile-open {
+  width: 100vw!important;
+}
+
 </style>

@@ -1,20 +1,35 @@
 <script setup lang="ts">
-
 import Button from "~/components/UI/Button.vue";
+import type {IProduct} from "~/types/types";
+import useProductItem from "~/hooks/useProductItem";
+
+interface IProps {
+  product: IProduct;
+}
+
+const props = defineProps<IProps>()
 
 const {isMobile} = useDevice()
+
+const {price, images} = useProductItem(props.product)
 
 </script>
 
 <template>
-  <div :class="['product-item-wrapper', {'mobile-product': isMobile}]" @click="isMobile && $router.push('/product/1')">
-    <img src="/img/product2.jpg" alt="Product">
+  <div
+    :class="['product-item-wrapper', {'mobile-product': isMobile}]"
+    @click="isMobile && $router.push(`/product/${product.id}`)"
+  >
+    <img
+      :src="images[0]"
+      :alt="product?.name"
+    >
     <div v-if="isMobile" class="mobile-info">
       <div>
-        <span>50.00 р</span>
-        <s>65.00 р</s>
+        <span>{{price}} р</span>
+        <s>65000.00 р</s>
       </div>
-      <span class="mobile-product-name">Блузка женская классная</span>
+      <span class="mobile-product-name">{{product?.name}}</span>
       <ClientOnly>
         <div class="mobile-info-last-block">
           <section>
@@ -30,16 +45,16 @@ const {isMobile} = useDevice()
     </div>
     <div v-else class="info">
       <div class="description">
-        <span>50.00 р</span>
-        <s>65.00 р</s>
-        <p>Блузка женская классная</p>
+        <span>{{price}} р</span>
+        <s>65000.00 р</s>
+        <p>{{product?.name}}</p>
       </div>
       <ClientOnly>
         <div class="product-controls">
           <SvgLoader width="20" height="20" icon-name="like"/>
           <SvgLoader width="20" height="20" icon-name="cart"/>
         </div>
-        <NuxtLink to="/product/1" v-if="!isMobile">
+        <NuxtLink :to="{path: `/catalog/${product.id}`}" v-if="!isMobile">
           <Button class="product-btn" is-arrow compress :is-pink="false">Подробнее</Button>
         </NuxtLink>
         <section class="rating">
@@ -59,6 +74,8 @@ const {isMobile} = useDevice()
 
   img {
     width: 100%;
+    height: 385px;
+    object-fit: cover;
   }
 }
 
@@ -96,6 +113,9 @@ const {isMobile} = useDevice()
     color: #7D7D7D;
     margin-top: 13px;
     white-space: nowrap;
+    max-width: 155px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & > s {

@@ -9,7 +9,7 @@ const {isMobile} = useDevice()
 </script>
 
 <template>
-  <div v-if="isMobile" class="mobile-banner-top">
+  <div v-if="isMobile" class="mobile-banner-top start-pos" v-showBlock>
     <h1>Добро пожаловать <br/> в <span>Cocteil</span></h1>
     <p>
       Экономим Ваше время! <br/>
@@ -20,10 +20,10 @@ const {isMobile} = useDevice()
         class="main-page-big-button"
         is-mobile
         is-pink
-        @click="$router.push('/Catalog')"
+        @click="navigateTo('/catalog')"
     />
   </div>
-  <div :class="['banner', {translate: isOpen, full: fullOpen}]" v-else>
+  <div :class="['banner start-pos', {translate: isOpen, full: fullOpen}]" v-else v-showBlock>
     <div class="wrapper">
       <div class="left">
         <img src="/img/jeans-small.png" alt="Jeans">
@@ -41,7 +41,7 @@ const {isMobile} = useDevice()
     <CircleButtonBig
         class="main-page-big-button"
         :is-pink="false"
-        @click="$router.push('/Catalog')"
+        @click="navigateTo('/catalog')"
     />
   </div>
 </template>

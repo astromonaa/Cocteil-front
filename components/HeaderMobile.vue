@@ -1,9 +1,10 @@
 <script setup lang="ts">
-
+const sidebarRef = ref()
 </script>
 
 <template>
   <header class="header-mobile">
+    <SideBar ref="sidebarRef"/>
     <div v-if="$route.path === '/'">
       <span class="chosen-category">Женщинам</span>
       <span>Мужчинам</span>
@@ -22,9 +23,7 @@
       <LazyNuxtLink to="/cart">
         <SvgLoader width="25" height="25" icon-name="shopping"/>
       </LazyNuxtLink>
-      <LazyNuxtLink to="/">
-        <SvgLoader width="25" height="25" icon-name="menu"/>
-      </LazyNuxtLink>
+      <SvgLoader width="25" height="25" icon-name="menu" @click="sidebarRef.toggleMenuOpen()"/>
     </section>
   </header>
 </template>

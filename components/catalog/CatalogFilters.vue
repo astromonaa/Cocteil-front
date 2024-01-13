@@ -1,11 +1,21 @@
 <script setup lang="ts">
 
 import CircleDecoration from "~/components/UI/CircleDecoration.vue";
+import type {IProductData} from "~/types/types";
+
+interface IProps {
+  products: IProductData[]
+}
+
+const props = defineProps<IProps>()
+
 
 const minPrice = ref(0)
 const isSizesOpened = ref(false)
+const isColorsOpened = ref(false)
 
 const sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL', '36', '38', '40', '42', '44', '46', '48', '50', '52', '54', '56', 'Универсальный']
+const colors = ['#fff', '#000', '#A61F1F', '#3D7B52', '#EAD943', '#296297', '#C4C4C4']
 </script>
 
 <template>
@@ -17,7 +27,7 @@ const sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL', '36', '38', '40', '42', '44', 
       <input v-model="minPrice" type="range" min="2000" max="150000">
     </div>
     <small>{{ (+minPrice).toLocaleString() }} &#8381;</small>
-    <div class="flex justify-between items-center" @click="isSizesOpened = !isSizesOpened">
+    <div class="flex justify-between items-center pointer" @click="isSizesOpened = !isSizesOpened">
       <ClientOnly>
         <span class="filter-label">Размер</span>
         <font-awesome-icon icon="fa-solid fa-chevron-down" style="color: #213454; transition: all 0.3s" :class="{rotate: isSizesOpened}"/>
@@ -29,13 +39,16 @@ const sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL', '36', '38', '40', '42', '44', 
         <span>{{ size }}</span>
       </li>
     </ul>
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center pointer" @click="isColorsOpened = !isColorsOpened">
       <ClientOnly>
         <span class="filter-label">Цвета</span>
-        <font-awesome-icon icon="fa-solid fa-chevron-down" style="color: #213454; transition: all 0.3s"/>
+        <font-awesome-icon icon="fa-solid fa-chevron-down" style="color: #213454; transition: all 0.3s" :class="{rotate: isColorsOpened}"/>
       </ClientOnly>
     </div>
-    <CircleDecoration decoration="arrow" class="to-up" size="large"/>
+    <div class="flex gap-10 flex-wrap" v-if="isColorsOpened">
+      <div class="colors-item" v-for="color in colors" :key="color" :style="{background: color}"></div>
+    </div>
+    <CircleDecoration v-if="products?.length > 10" decoration="arrow" class="to-up" size="large"/>
   </div>
 </template>
 
@@ -44,7 +57,7 @@ const sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL', '36', '38', '40', '42', '44', 
   display: flex;
   flex-direction: column;
   gap: 20px;
-  min-width: 140px;
+  min-width: 163px;
   position: relative;
 
   .range-block {
@@ -118,10 +131,11 @@ ul {
   transform: rotate(-180deg);
 }
 
-//.sizes-list {
-//  height: 0;
-//  transition: all 0.3s;
-//  will-change: height;
-//  overflow: hidden;
-//}
+.colors-item {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 0.1px solid #333;
+  cursor: pointer;
+}
 </style>

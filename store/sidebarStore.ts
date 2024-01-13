@@ -1,4 +1,4 @@
-import {Ref, ref} from 'vue'
+import {ref} from 'vue'
 import {defineStore} from "pinia";
 
 export const useSidebarStore = defineStore('sidebarStore', () => {

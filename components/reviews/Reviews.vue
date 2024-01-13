@@ -1,22 +1,24 @@
 <script setup lang="ts">
+import {computed} from "vue";
 import {Swiper, SwiperSlide} from 'swiper/vue'
+import 'swiper/css';
+
+import 'swiper/css/pagination';
 import {Navigation, Pagination} from 'swiper/modules'
-import {IReview} from "~/types/types";
+
+import type {IReview} from "~/types/types";
 import ReviewItem from "~/components/reviews/ReviewItem.vue";
 import CircleDecoration from "~/components/UI/CircleDecoration.vue";
 import Button from "~/components/UI/Button.vue";
 
-import 'swiper/css';
 
-import 'swiper/css/pagination';
-import {computed} from "vue";
 interface IProps {
   reviews?: IReview[],
   title: string;
 }
 const navigation = {
   nextEl: '.next-review',
-}
+} 
 
 const {isMobile} = useDevice()
 
@@ -25,7 +27,7 @@ const modules = computed(() => isMobile ? [Navigation, Pagination] : [Navigation
 
 defineProps<IProps>()
 
-const slider = shallowRef()
+const slider = shallowRef<any>('div')
 
 onMounted(() => {
   setTimeout(() => slider.value = Swiper, 500)
@@ -36,7 +38,7 @@ onMounted(() => {
 
 <template>
 
-  <div :class="['wrapper', {'mobile-wrapper': isMobile}]">
+  <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <h2>{{ title || 'Отзывы'}}</h2>
     <div class="slider-container">
       <component

@@ -5,7 +5,7 @@ const {isMobile} = useDevice()
 </script>
 
 <template>
-  <div :class="['wrapper', {'mobile-wrapper': isMobile}]">
+  <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <h2>Сотрудничество с нами</h2>
     <p>Наша компания постоянно растёт и расширяет рынок, поэтому мы заинтересованы в новых партнёрах и рассматриваем
       новые проекты, которые могут быть привлекательны и интересны с коммерческой точки зрения. </p>

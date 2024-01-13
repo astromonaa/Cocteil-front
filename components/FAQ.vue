@@ -52,7 +52,7 @@ const {isMobile} = useDevice()
 </script>
 
 <template>
-  <div :class="['wrapper', {'mobile-wrapper': isMobile}]">
+  <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <h2>Часто задаваемые вопросы</h2>
     <span class="cursive subtitle">FAQ</span>
     <div

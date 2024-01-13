@@ -2,20 +2,43 @@
 import {storeToRefs} from "pinia";
 import {useSidebarStore} from "~/store/sidebarStore";
 import MobileCartProduct from "~/components/products/MobileCartProduct.vue";
+import type {IProduct} from "~/types/types";
 
 const {back} = useRouter()
 const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 const {isMobile} = useDevice()
 
+const {$app} = useNuxtApp()
+
 definePageMeta({
   layout: 'without-footer-layout'
 })
+
+
+const cartProducts = ref<IProduct[]>([])
+const cartPrice = ref(0)
+const isLoading = ref(false)
+
+const fetchCartProducts = async () => {
+  try {
+    isLoading.value = true
+    const {products, totalPrice} = await $app._apiPack._cartApi.getCartProductsAsync()
+    cartProducts.value = products
+    cartPrice.value = totalPrice
+  }catch (e) {
+    console.log(e)
+  }finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchCartProducts)
 </script>
 
 <template>
   <main>
     <div :class="['cart', {translate: isOpen, full: fullOpen}]" v-if="!isMobile">
-      <div class="cart-page-top">
+      <div class="cart-page-top start-pos" v-showBlock>
         <LazyUICircleDecoration decoration="arrow" direction="left" @click="back"/>
         <h1>Корзина</h1>
         <div>
@@ -23,24 +46,32 @@ definePageMeta({
           <small>2</small>
         </div>
       </div>
-      <section class="products-list">
-        <LazyProductsCartProduct/>
-        <LazyProductsCartProduct/>
+      <section class="products-list start-pos" v-showBlock>
+        <LazyProductsCartProduct
+          v-for="product in cartProducts"
+          :key="product.id"
+          :product="product"
+        />
       </section>
-      <div class="total">
+      <div class="total start-pos" v-showBlock>
         <span>Итого:</span>
-        <div>90.00</div>
-        <small>Товары, 2 шт.</small>
+        <div>{{cartPrice}}</div>
+        <small>Товары, {{cartProducts.length}} шт.</small>
       </div>
-      <LazyNuxtLink to="/createoffer">
+      <LazyNuxtLink to="/createoffer" class="start-pos" v-showBlock>
         <LazyUIButton compress style="margin: 50px 0 10px">Заказать</LazyUIButton>
       </LazyNuxtLink>
-      <div class="terms">
+      <div class="terms start-pos" v-showBlock>
         <input type="checkbox">
         <span>Согласен с условиями правил пользования торговой площадкой и правилами возврата</span>
       </div>
       <LazyUICircleDecoration decoration="arrow" direction="up" size="large" style="margin-top: 55px"/>
-      <LazyProductsProductRecommendationSystem title="Может, что-то еще" hide-arrows style="margin-top: 23px"/>
+<!--      <LazyProductsProductRecommendationSystem-->
+<!--          v-showBlock-->
+<!--          title="Может, что-то еще"-->
+<!--          hide-arrows style="margin-top: 23px"-->
+<!--          class="start-pos"-->
+<!--      />-->
     </div>
     <!-- MOBILE-->
     <div class="mobile-cart" v-else>
@@ -54,7 +85,7 @@ definePageMeta({
 
       <LazyNuxtLink to="/createoffer">
         <span class="total">
-          К оформлению 4 шт, 150 р.
+          К оформлению {{cartProducts.length}} шт, {{ cartPrice }} р.
         </span>
       </LazyNuxtLink>
     </div>
@@ -63,7 +94,7 @@ definePageMeta({
 
 <style scoped lang="scss">
 main {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .cart {

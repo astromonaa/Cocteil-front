@@ -1,16 +1,37 @@
 <script setup lang="ts">
-
+import {useUserStore} from "~/store/user";
 import Button from "~/components/UI/Button.vue";
 import {computed} from "vue";
+import {storeToRefs} from "pinia";
+
+import {removeFromLocalStorage} from "~/utils/useLocalStorage";
+import {EUserRoles} from "~/types/types";
 
 interface IProps {
   showAvatar?: boolean;
   position?: 'center' | 'left'
 }
 
+const {$app} = useNuxtApp()
+const userStore = useUserStore()
+
+const {isAuth, user} = storeToRefs(userStore)
+
 const props = withDefaults(defineProps<IProps>(), {
   position: 'center'
 })
+
+const logout = async () => {
+  try {
+    await $app._apiPack._authApi.logout()
+    removeFromLocalStorage('token')
+    userStore.setUser(null)
+    window.location.reload()
+  }catch(e) {
+    console.log(e)
+  }
+}
+
 const margin = computed(() => props.position === 'center' ? '0 24px' : 0)
 </script>
 
@@ -18,11 +39,20 @@ const margin = computed(() => props.position === 'center' ? '0 24px' : 0)
   <div class="user-menu">
     <template v-if="showAvatar">
       <img src="/img/svg/40x40/avatar-default.svg" alt="avatar" data-not-lazy>
-      <LazyNuxtLink to="/auth">
+
+      <NuxtLink v-if="!isAuth" to="/auth">
         <Button is-mini>Войти</Button>
-      </LazyNuxtLink>
+      </NuxtLink>
+      <NuxtLink v-if="isAuth" to="#">
+        <Button is-mini>Профиль</Button>
+      </NuxtLink>
     </template>
-    <ul>
+    <ul v-if="isAuth">
+      <li v-if="user.role === EUserRoles.ADMIN" class="flex justify-center">
+        <LazyNuxtLink to="/admin">
+          <span>Admin</span>
+        </LazyNuxtLink>
+      </li>
       <li>
         <LazyNuxtLink to="/cart">
           <SvgLoader width="20" height="20" icon-name="cart"/>
@@ -44,8 +74,10 @@ const margin = computed(() => props.position === 'center' ? '0 24px' : 0)
       </li>
       <hr>
       <li>
-        <SvgLoader width="20" height="20" icon-name="money"/>
-        <span>Бонусы</span>
+        <LazyNuxtLink to="/bonuses">
+          <SvgLoader width="20" height="20" icon-name="money"/>
+          <span>Бонусы</span>
+        </LazyNuxtLink>
       </li>
       <li>
         <SvgLoader width="20" height="20" icon-name="user"/>
@@ -56,7 +88,7 @@ const margin = computed(() => props.position === 'center' ? '0 24px' : 0)
         <span>История покупок</span>
       </li>
       <hr>
-      <li>
+      <li @click="logout">
         <SvgLoader width="20" height="20" icon-name="logout"/>
         <span>Выйти</span>
       </li>
