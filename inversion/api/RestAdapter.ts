@@ -1,7 +1,5 @@
 import {injectable} from "inversify";
 import type {IRequestData, IRestModuleInterface} from "~/inversion/interfaces/RestModule.interface";
-import type {Axios, AxiosResponse} from "axios";
-import axios from "axios";
 import {getFromLocaleStorage} from "~/utils/useLocalStorage";
 
 
@@ -15,9 +13,9 @@ const getToken = () => {
 const createApi = (apiUrl:string) => {
 	const token = process.client ? getToken() : null
 
-	return axios.create({
+	return $fetch.create({
 		baseURL: apiUrl,
-		withCredentials: true,
+		credentials: 'include',
 		headers: {
 			Authorization: `Bearer ${token}`
 		}
@@ -28,7 +26,7 @@ const createApi = (apiUrl:string) => {
 @injectable()
 export class RestAdapter implements IRestModuleInterface {
 	readonly _name = '_api'
-	_api: Axios
+	_api: any
 	readonly _apiUrl: string
 
 	constructor() {
@@ -42,22 +40,28 @@ export class RestAdapter implements IRestModuleInterface {
 	}
 
 	async get(inputData: IRequestData) {
-		const {data} = await this._api.get<IRequestData, AxiosResponse>(inputData.url)
-		return data
+		return this._api(inputData.url)
 	}
 
 	async post(inputData: IRequestData) {
-		const {data} = await this._api.post<IRequestData, AxiosResponse>(inputData.url, inputData.data)
+		const data = await this._api(inputData.url, {
+			method: 'POST',
+			body: inputData.data
+		})
 		return data
 	}
 
 	async put(inputData: IRequestData) {
-		const {data} = await this._api.put<IRequestData, AxiosResponse>(inputData.url, inputData.data)
+		const data = await this._api(inputData.url, {
+			method: 'PUT',
+			body: inputData.data
+		})
 		return data
 	}
 
 	async delete(inputData: IRequestData) {
-		const {data} = await this._api.delete<IRequestData, AxiosResponse>(inputData.url)
-		return data
+		return this._api(inputData.url, {
+			method: 'DELETE'
+		})
 	}
 }

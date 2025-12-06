@@ -1,31 +1,25 @@
-import axios from "axios";
 import {getFromLocaleStorage} from '~/utils/useLocalStorage'
 
 
-const getToken = () => {
+export const getToken = () => {
   try {
     return JSON.parse(getFromLocaleStorage('token') || '')
   }catch {
     return null
   }
 }
-export default defineNuxtPlugin(({vueApp, $config}) => {
-  const baseURL = $config.public.apiUrl as string
+export default defineNuxtPlugin(({$config}) => {
+  const baseURL = `http://${$config.public.apiUrl}`;
   const token = process.client ? getToken() : null
 
-  const api = axios.create({
+  const api = $fetch.create({
     baseURL,
-    withCredentials: true,
+    credentials: 'include',
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
 
-  // $api.interceptors.response.use(config => {
-  //   if (config.status === 404) {
-  //     config.request()
-  //   }
-  // })
 
   return {
     provide: {

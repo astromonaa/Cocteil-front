@@ -6,7 +6,7 @@ import InputText from "~/components/UI/InputText.vue";
 <template>
   <div class="search">
     <SvgLoader width="20" height="20" icon-name="search" />
-    <InputText label="Поиск" placeholder="Поиск" type="search" id="search" />
+    <InputText modelValue="''" label="Поиск" placeholder="Поиск" type="search" id="search" />
   </div>
 </template>
 

@@ -11,17 +11,17 @@ const props = defineProps<IProps>()
 
 const {isMobile} = useDevice()
 
-const {price, images} = useProductItem(props.product)
+const {price, images, handleLike, product} = useProductItem(props.product)
 
 </script>
 
 <template>
   <div
     :class="['product-item-wrapper', {'mobile-product': isMobile}]"
-    @click="isMobile && $router.push(`/product/${product.id}`)"
+    @click="isMobile && $router.push(`/product/${product?.id}`)"
   >
     <img
-      :src="images[0]"
+      :src="images?.[0]"
       :alt="product?.name"
     >
     <div v-if="isMobile" class="mobile-info">
@@ -51,10 +51,17 @@ const {price, images} = useProductItem(props.product)
       </div>
       <ClientOnly>
         <div class="product-controls">
-          <SvgLoader width="20" height="20" icon-name="like"/>
+          <SvgLoader
+              v-if="!product?.favorite"
+              width="20"
+              height="20"
+              icon-name="like"
+              @click.prevent="handleLike"
+          />
+          <div v-else class="liked" @click.prevent="handleLike"></div>
           <SvgLoader width="20" height="20" icon-name="cart"/>
         </div>
-        <NuxtLink :to="{path: `/catalog/${product.id}`}" v-if="!isMobile">
+        <NuxtLink :to="{path: `/catalog/${product?.id}`}" v-if="!isMobile">
           <Button class="product-btn" is-arrow compress :is-pink="false">Подробнее</Button>
         </NuxtLink>
         <section class="rating">
@@ -171,6 +178,13 @@ const {price, images} = useProductItem(props.product)
   &-last-block {
     justify-content: space-between;
   }
+}
+
+.liked {
+  width: 20px;
+  height: 20px;
+  background: url(../../public/img/heart-red.jpeg);
+  background-size: cover;
 }
 
 </style>

@@ -1,8 +1,5 @@
-import useApiService from "~/services/ApiService";
 import {useUserStore} from "~/store/user";
 import {saveToLocalStorage} from '~/utils/useLocalStorage'
-
-
 
 const useAuth = () => {
 	const {$app} = useNuxtApp()
@@ -12,8 +9,9 @@ const useAuth = () => {
 			userStore.setIsLoading(true)
 			const data = await $app._apiPack._authApi.auth()
 			userStore.setUser(data)
-			saveToLocalStorage('token', data.accessToken)
+			saveToLocalStorage('token', data.access_token)
 		}catch (e) {
+      console.log(e)
 			userStore.setUser(null)
 			throw new Error(e.message)
 		}finally {

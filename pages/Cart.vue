@@ -3,36 +3,18 @@ import {storeToRefs} from "pinia";
 import {useSidebarStore} from "~/store/sidebarStore";
 import MobileCartProduct from "~/components/products/MobileCartProduct.vue";
 import type {IProduct} from "~/types/types";
+import {useCartStore} from "~/store/cartStore";
 
 const {back} = useRouter()
 const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 const {isMobile} = useDevice()
 
-const {$app} = useNuxtApp()
-
 definePageMeta({
   layout: 'without-footer-layout'
 })
 
+const { cartProducts, cartPrice } = storeToRefs(useCartStore())
 
-const cartProducts = ref<IProduct[]>([])
-const cartPrice = ref(0)
-const isLoading = ref(false)
-
-const fetchCartProducts = async () => {
-  try {
-    isLoading.value = true
-    const {products, totalPrice} = await $app._apiPack._cartApi.getCartProductsAsync()
-    cartProducts.value = products
-    cartPrice.value = totalPrice
-  }catch (e) {
-    console.log(e)
-  }finally {
-    isLoading.value = false
-  }
-}
-
-onMounted(fetchCartProducts)
 </script>
 
 <template>

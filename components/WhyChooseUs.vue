@@ -38,29 +38,22 @@ const sliderItems = [
   }
 ]
 
-const slider = shallowRef()
-
-onMounted(() => {
-  setTimeout(() => slider.value = Swiper,500)
-})
-
 </script>
 
 <template>
   <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <h2 :class="{'mobile-title': isMobile}">Почему выбирают нас?</h2>
     <section class="mobile-swiper" v-if="isMobile">
-      <component
-          :is="slider"
-          :modules="modules"
-          :slides-per-view="2"
-          :navigation="navigation"
-          loop
+      <Swiper
+        :modules="modules"
+        :slides-per-view="2"
+        :navigation="navigation"
+        loop
       >
         <swiper-slide v-for="slide in sliderItems" :key="slide.id">
           <div class="mobile-swiper-item">{{ slide.text?.replaceAll('<br/>', '') }}</div>
         </swiper-slide>
-      </component>
+      </Swiper>
       <SvgLoader class="mobile-swiper-next" width="20" height="20" icon-name="arrow-right"/>
       <CircleDecoration decoration="message" size="small" class="message"/>
     </section>

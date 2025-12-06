@@ -17,7 +17,7 @@ export class ProductApiModule implements IProductApiModuleInterface {
 	async fetchProducts() {
 		try {
 			return this._adapter.get({
-				url: '/api/products'
+				url: '/api/products',
 			})
 		}catch (e) {
 			await Promise.reject()
@@ -77,7 +77,7 @@ export class ProductApiModule implements IProductApiModuleInterface {
 	async fetchFavorites() {
 		try {
 			return this._adapter.get({
-				url: '/api/favorites/'
+				url: '/api/favorites'
 			})
 		}catch (e) {
 			await Promise.reject(e)

@@ -32,7 +32,7 @@ export class CartApiModule implements ICartApiModuleInterface {
 	async getCartProductsAsync() {
 		try {
 			return this._adapter.get({
-				url: `/api/cart/`
+				url: `/api/cart`
 			})
 		}catch(e) {
 			await Promise.reject(e)

@@ -1,4 +1,4 @@
-import type {Axios, AxiosResponse} from "axios";
+import type {$Fetch} from "nitropack";
 
 export interface IRequestData {
 	url: string;
@@ -7,12 +7,12 @@ export interface IRequestData {
 }
 export interface IRestModuleInterface {
 	readonly _name: string;
-	_api: Axios
+	_api: $Fetch
 	readonly _apiUrl: string
 
-	get: (data: IRequestData) => Promise<AxiosResponse<IRequestData, any>>,
-	post: (data: IRequestData) => Promise<AxiosResponse<IRequestData, any>>,
-	delete: (data: IRequestData) => Promise<AxiosResponse>,
-	put: (data: IRequestData) => Promise<AxiosResponse>,
+	get: <T>(data: IRequestData) => Promise<T>,
+	post: <T>(data: IRequestData) => Promise<T>,
+	delete: (data: IRequestData) => Promise<void>,
+	put: (data: IRequestData) => Promise<void>,
 	updateApi: () => void;
 }

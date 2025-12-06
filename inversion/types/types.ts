@@ -5,7 +5,12 @@ export const TYPES = {
 	_categoriesApi:  Symbol.for('_categoriesApi'),
 	_usersApi:  Symbol.for('_usersApi'),
 	_cartApi:  Symbol.for('_cartApi'),
+	_chatsApi: Symbol.for('_chatsApi'),
+	_socketApi: Symbol.for('_socketApi'),
 	_restAdapter: Symbol.for('_restAdapter'),
+	_socketIOAdapter: Symbol.for('_socketIOAdapter'),
+  _websocketAdapter: Symbol.for('_websocketAdapter'),
 	_api: Symbol.for('_api'),
-	_authApi: Symbol.for('_authApi')
+	_authApi: Symbol.for('_authApi'),
+	_ordersApi:  Symbol.for('_ordersApi'),
 }

@@ -40,7 +40,7 @@ watch(() => props.modelValue, n => {
     <input
       :type="type"
       :id="id"
-      :placeholder="placeholder"
+      :placeholder="!label ? placeholder : ''"
       :value="modelValue"
       :data-valid="isValid"
       autocomplete="new-password"
@@ -80,7 +80,7 @@ watch(() => props.modelValue, n => {
     }
   }
   .input-wrapper>input:focus~label,
-  .input-wrapper>input:valid~label
+  .input:not(:placeholder-shown)~label
   {
     transform: translateY(-30px) scale(0.7);
   }

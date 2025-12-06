@@ -10,9 +10,9 @@ const{isMobile} = useDevice()
   <div :class="['wrapper start-pos', {'mobile-wrapper': isMobile}]" v-showBlock>
     <form action="#" class="form">
       <h3>Приглашаем  к сотрудничеству производителей и поставщиков одежды, обуви и аксессуаров</h3>
-      <InputText class="form-input" label="Ваше имя" placeholder="Ваше имя" id="name" :centered="isMobile"/>
-      <InputText class="form-input" type="tel" label="Номер телефона" placeholder="Номер телефона" id="tel" :centered="isMobile"/>
-      <InputText class="form-input" type="email" label="Электронная почта" placeholder="Электронная почта" id="email" :centered="isMobile"/>
+      <InputText modelValue="''" class="form-input" label="Ваше имя" placeholder="Ваше имя" id="name" :centered="isMobile"/>
+      <InputText modelValue="''" class="form-input" type="tel" label="Номер телефона" placeholder="Номер телефона" id="tel" :centered="isMobile"/>
+      <InputText modelValue="''" class="form-input" type="email" label="Электронная почта" placeholder="Электронная почта" id="email" :centered="isMobile"/>
       <div class="terms">
         <input type="checkbox">
         <span>Даю согласие на обработку персональных данных</span>

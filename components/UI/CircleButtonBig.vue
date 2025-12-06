@@ -3,13 +3,15 @@
 interface IProps {
   label?: string,
   isPink?: boolean,
-  centered?: boolean
+  centered?: boolean;
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   label: 'Каталог',
   isPink: true,
-  isMobile: false
+  isMobile: false,
+  disabled: false
 })
 
 const translate = computed(() => props.centered ? '-18%' : '-55%')
@@ -19,12 +21,12 @@ const {isMobile} = useDevice()
 </script>
 
 <template>
-  <div :class="['btn', {'btn-pink': isPink, 'btn-white': !isPink, mobile: isMobile}]">
-    <div>{{label}}</div>
+  <button :class="['btn', {'btn-pink': isPink, 'btn-white': !isPink, mobile: isMobile}]" :disabled="disabled">
+    <span>{{label}}</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="8" viewBox="0 0 80 8" fill="none" :class="{white: isPink}">
       <path d="M79.3536 4.35355C79.5488 4.15829 79.5488 3.84171 79.3536 3.64645L76.1716 0.464466C75.9763 0.269204 75.6597 0.269204 75.4645 0.464466C75.2692 0.659728 75.2692 0.976311 75.4645 1.17157L78.2929 4L75.4645 6.82843C75.2692 7.02369 75.2692 7.34027 75.4645 7.53553C75.6597 7.7308 75.9763 7.7308 76.1716 7.53553L79.3536 4.35355ZM0 4.5H79V3.5H0V4.5Z"/>
     </svg>
-  </div>
+  </button>
 </template>
 
 <style scoped lang="scss">
@@ -84,6 +86,16 @@ const {isMobile} = useDevice()
     &>svg {
       width: 41%;
       transform: translateX(33%);
+    }
+  }
+  .btn:disabled {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+    filter: none;
+
+    &>svg>path {
+      fill: #514A7E;
     }
   }
 </style>

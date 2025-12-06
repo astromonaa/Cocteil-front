@@ -4,6 +4,7 @@ import ProductItem from "~/components/products/ProductItem.vue";
 import {useSidebarStore} from "~/store/sidebarStore";
 import {storeToRefs} from 'pinia'
 import type {IProduct} from "~/types/types";
+import {useAsyncData} from "nuxt/app";
 
 const {$app} = useNuxtApp()
 
@@ -11,27 +12,17 @@ const {isOpen, fullOpen} = storeToRefs(useSidebarStore())
 
 const {isMobile} = useDevice()
 
-const products = ref<Ref<IProduct[]> | []>([])
-const isLoading = ref(false)
-const maxCount = ref(0)
 
-const fetchProducts = async () => {
-  try {
-    const {rows, count} = await $app._apiPack._productsApi.fetchProducts()
-    products.value = rows
-    maxCount.value = count;
-  }catch (e) {
-    console.log(e)
-  }finally {
-    isLoading.value = false
-  }
-}
+const { data: productsResponse } = await useAsyncData('catalog', async () => {
+  const {rows, count} = await $app._apiPack._productsApi.fetchProducts()
+  return {products: rows, maxCount: count}
+})
 
 definePageMeta({
   layout: 'without-footer-layout',
 })
 
-onMounted(fetchProducts)
+const showMoreBtn = computed(() => productsResponse.value?.products?.length !== productsResponse.value?.maxCount)
 
 </script>
 
@@ -42,24 +33,23 @@ onMounted(fetchProducts)
       <h1>Блузки и рубашки для женщин</h1>
       <LazyCatalogSortBlock/>
       <section>
-        <LazyCatalogFilters :products="products"/>
+        <LazyCatalogFilters :products="productsResponse?.products"/>
         <div class="products-grid">
-          <ProductItem v-for="product in products" :product="product"/>
+          <ProductItem
+              v-for="product in productsResponse?.products"
+              :key="product.id"
+              :product="product"
+          />
         </div>
       </section>
-      <LazyUILoadMoreBtn v-if="products?.length !== maxCount"/>
+      <LazyUILoadMoreBtn v-if="showMoreBtn"/>
     </div>
     <div v-else>
       <div class="mobile-catalog start-pos" v-showBlock>
-        <ProductItem/>
-        <ProductItem/>
-        <ProductItem/>
-        <ProductItem/>
-        <ProductItem/>
-        <ProductItem/>
+        <ProductItem v-for="product in productsResponse?.products" :key="product.id" :product="product"/>
       </div>
       <LazyUICircleDecoration
-        v-if="products?.length !== maxCount"
+        v-if="showMoreBtn"
         class="to-up"
         size="small"
         decoration="arrow"

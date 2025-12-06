@@ -2,16 +2,17 @@
 
 const {isMobile} = useDevice()
 
-
 </script>
 
 <template>
   <div class="container">
-    <LazyHeaderDesktop v-if="!isMobile"/>
-    <LazyHeaderMobile v-else/>
-    <slot/>
-    <LazyFooterDesktop v-if="!isMobile"/>
-    <LazyFooterMobile v-else />
+    <LazyHeaderMobile v-if="isMobile"/>
+    <LazyHeaderDesktop v-else/>
+    <div>
+      <slot/>
+    </div>
+    <LazyFooterMobile v-if="isMobile" />
+    <LazyFooterDesktop v-else />
   </div>
 </template>
 

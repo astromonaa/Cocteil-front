@@ -11,7 +11,7 @@ import FAQ from "~/components/FAQ.vue";
   <main>
     <MainPageBannerTop/>
     <WhyChooseUs/>
-    <HuryToBuy/>
+<!--    <HuryToBuy/>-->
     <Reviews title="Отзывы наших покупателей"/>
     <FAQ/>
     <Cooperation/>

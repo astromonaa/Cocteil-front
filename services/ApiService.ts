@@ -1,6 +1,5 @@
 import type {IUser} from "~/types/types";
-import {AxiosError} from 'axios'
-const getError = (e:AxiosError) => new Error(e?.response?.data?.message || e.message)
+const getError = (e:any) => new Error(e?.response?.data?.message || e.message)
 
 export default function useApiService () {
 	const {$api} = useNuxtApp()
@@ -18,7 +17,7 @@ export default function useApiService () {
 		try {
 			const {data} = await $api.post<IUser>('/api/users/registration', {email, password})
 			return data
-		}catch (e:AxiosError) {
+		}catch (e:any) {
 			throw getError(e)
 		}
 	}
@@ -27,7 +26,7 @@ export default function useApiService () {
 		try {
 			const {data} = await $api.post<IUser>('/api/users/login', {email, password})
 			return data;
-		}catch (e:AxiosError){
+		}catch (e:any){
 			throw getError(e)
 		}
 	}
@@ -36,7 +35,7 @@ export default function useApiService () {
 		try {
 			const {data} = await $api.get<IUser>('/api/users/auth')
 			return data;
-		}catch (e:AxiosError){
+		}catch (e:any){
 			throw getError(e)
 		}
 	}
@@ -45,7 +44,7 @@ export default function useApiService () {
 		try {
 			const {data} = await $api.post<any>('/api/products/create', productData)
 			return data;
-		}catch (e:AxiosError){
+		}catch (e:any){
 			throw getError(e)
 		}
 	}

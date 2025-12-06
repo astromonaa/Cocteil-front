@@ -7,6 +7,10 @@ const inputRef = ref<Ref>()
 const text = ref<string>()
 const isChatOpen = ref<boolean>(false)
 
+const { $app } = useNuxtApp()
+
+// const socket = ref()
+
 const messages = ref([
   { id: 1, text: 'Здравствуйте! Чем я могу Вам помочь?', isAssistant: true },
   { id: 2, text: 'У меня есть вопрос!)', isAssistant: false },
@@ -23,11 +27,22 @@ const getTime = () => {
 
 const sendMessage = () => {
   if (!text.value?.trim().length) return
-  const lastId = (messages.value.at(-1)?.id + 1) || 1
-  messages.value.push({id: lastId, text: text.value, isAssistant: false})
+  $app._apiPack._socketApi.emitSendMessage(text.value)
   text.value = ''
 }
 
+
+onMounted(() => {
+  $app._apiPack._socketApi.listenChatInitEvents()
+  $app._apiPack._socketApi.subscribeToReceiveMessage((msg: string) => {
+    const lastId = messages.value?.at(-1)?.id || 1
+    messages.value.push({id: lastId, text: msg, isAssistant: false })
+  })
+})
+
+onUnmounted(() => {
+  $app._apiPack._socketApi.unsubscribe()
+})
 </script>
 
 <template>

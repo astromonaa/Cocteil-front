@@ -1,25 +1,34 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  css: ['~/public/css/variables.css', '@fortawesome/fontawesome-svg-core/styles.css'],
+  css: [
+    '~/public/css/global.css',
+    '~/public/css/variables.css',
+    '@fortawesome/fontawesome-svg-core/styles.css'
+  ],
+
   devtools: {enabled: false},
+
   googleFonts: {
     families: {
       'Roboto': [300, 400],
       'Bad Script': [400]
     },
   },
+
   modules: [
     "@nuxtjs/google-fonts",
     '@pinia/nuxt',
     '@nuxtjs/device',
     'nuxt-lazy-load',
   ],
+
   runtimeConfig: {
     public: {
       apiUrl: process.env.API_URL
     }
   },
+
   vite: {
     esbuild: {
       tsconfigRaw: {
@@ -28,10 +37,13 @@ export default defineNuxtConfig({
         },
       },
     },
+    optimizeDeps: { exclude: ['form-data'] }
   },
+
   device: {
     refreshOnResize: true
   },
+
   app: {
     pageTransition: {
       name: 'page',
@@ -47,6 +59,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   lazyLoad: {
     images: true,
     videos: true,
@@ -65,4 +78,6 @@ export default defineNuxtConfig({
       // See IntersectionObserver documentation
     }
   },
+
+  compatibilityDate: '2025-02-17',
 })

@@ -8,6 +8,7 @@ import { useAdminNotificationsStore } from '~/store/adminNotitcationsStore';
 import { storeToRefs } from 'pinia';
 import {useUserStore} from "~/store/user";
 import Loader from "~/components/UI/Loader.vue";
+import AdminIOChats from "~/components/admin/Chat/AdminIOChats.vue";
 
 definePageMeta({
   layout: 'base-layout',
@@ -23,6 +24,7 @@ const section = ref()
 const isCategories = computed(() => section.value === 'category')
 const isProducts = computed(() => section.value === 'products')
 const isUsers = computed(() => section.value === 'users')
+const isChat = computed(() => section.value === 'chats')
 
 watch(() => route.query, n => {
   section.value = n.section
@@ -41,6 +43,7 @@ watch(() => route.query, n => {
       <Categories v-if="isCategories" />
       <Products v-if="isProducts" />
       <Users v-if="isUsers"/>
+      <AdminIOChats v-if="isChat" />
 
     </section>
   </div>

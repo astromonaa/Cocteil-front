@@ -15,7 +15,7 @@ export default function (product?: IProduct | undefined) {
 
 	const userStore = useUserStore()
 
-	const localProduct = ref(product)
+	const localProduct = ref<IProduct | undefined>(product)
 
 	const price = computed(() => localProduct.value?.price?.toLocaleString() + ' ₽')
 
@@ -46,10 +46,10 @@ export default function (product?: IProduct | undefined) {
 	const handleLike = async () => {
 		if (!userStore.isAuth) return navigateTo('/auth')
 		try {
-			await $app._apiPack._productsApi.addToFavoritesAsync(route.params.id)
+			await $app._apiPack._productsApi.addToFavoritesAsync(route.params.id ?? product?.id)
 			await fetchOneProduct()
 		}catch (e) {
-			Promise.reject(e)
+			await Promise.reject(e)
 		}
 	}
 
@@ -57,7 +57,8 @@ export default function (product?: IProduct | undefined) {
 	const fetchOneProduct = async () => {
 		try {
 			isLoading.value = true
-			localProduct.value = await $app._apiPack._productsApi.fetchOneProduct(route.params.id)
+
+			localProduct.value = await $app._apiPack._productsApi.fetchOneProduct(route.params.id ?? product?.id)
 		}catch (e) {
 			await Promise.reject(e)
 		}finally {

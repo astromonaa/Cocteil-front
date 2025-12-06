@@ -6,12 +6,14 @@ interface IProps {
 }
 defineProps<IProps>()
 
+const {public: {apiUrl}} = useRuntimeConfig()
+
 </script>
 
 <template>
   <div class="cart-product">
-    <div class="img-wrapper" @click="$router.push('/product/1')">
-      <img src="/img/product2.jpg" alt="product card">
+    <div class="img-wrapper" @click="navigateTo(`/catalog/${product.id}`)">
+      <img :src="`${apiUrl}/${product.images[0]}`" alt="product card">
     </div>
     <div class="description">
       <div class="product-name">

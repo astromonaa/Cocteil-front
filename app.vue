@@ -2,14 +2,14 @@
   import MetaTag from "~/components/MetaTag.vue";
   import useListenMenuChecker from "~/hooks/useListenMenuChecker";
   import useAuth from "~/hooks/useAuth";
+  import {useAsyncData} from "nuxt/app";
 
   const {init} = useListenMenuChecker()
   const {auth} = useAuth()
 
-  onMounted(async () => {
-    init()
-    await auth()
-  })
+  await useAsyncData('auth', auth, { server: false })
+
+  onMounted(init)
 
 </script>
 

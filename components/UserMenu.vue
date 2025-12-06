@@ -84,8 +84,10 @@ const margin = computed(() => props.position === 'center' ? '0 24px' : 0)
         <span>Личные данные</span>
       </li>
       <li>
-        <SvgLoader width="20" height="20" icon-name="list"/>
-        <span>История покупок</span>
+        <LazyNuxtLink to="/orders">
+          <SvgLoader width="20" height="20" icon-name="list"/>
+          <span>История покупок</span>
+        </LazyNuxtLink>
       </li>
       <hr>
       <li @click="logout">

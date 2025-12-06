@@ -49,7 +49,7 @@ const onAddToCart = () => {
       <div class="product-page">
         <div class="product-page-top start-pos" v-showBlock>
           <CircleDecoration decoration="arrow" direction="left" @click="back"/>
-          <span>Главная/ {{product.Category.name}} /{{product.SubCategory?.name}} </span>
+          <span>Главная/ {{product.Category?.name}} /{{product.SubCategory?.name}} </span>
         </div>
         <div class="product-name start-pos" v-showBlock>
           <h1>{{product.name}}</h1>

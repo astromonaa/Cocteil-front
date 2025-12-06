@@ -32,9 +32,9 @@ const handleLogin = async () => {
     if (!isValid) return;
     const data = await $app._apiPack._authApi.login(email.value, password.value)
     userStore.setUser(data)
-    saveToLocalStorage('token', data.accessToken)
+    saveToLocalStorage('token', data.access_token)
     await router.push('/')
-    window?.location.reload()
+    reloadNuxtApp()
   }catch (e:Error) {
     errorMsg.value = e.message
   }finally {

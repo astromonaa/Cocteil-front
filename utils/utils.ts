@@ -61,3 +61,8 @@ export const categories = [
         name: 'Акции'
     }
 ]
+
+export const buildImagesPaths = (images: string[]) => {
+    const {public: {apiUrl}} = useRuntimeConfig();
+    return images.map((image) => `${apiUrl}/${image}`);
+}

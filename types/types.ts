@@ -61,6 +61,12 @@ export interface IProduct {
     favorite: boolean
 }
 
+export interface ICartProduct extends IProduct {
+    quantity: number;
+    size: number;
+    color: string;
+}
+
 export interface Category {
     id: number
     name: string
@@ -85,4 +91,27 @@ export interface ISize {
 export enum EUserRoles {
     USER='USER',
     ADMIN='ADMIN'
+}
+
+export interface IChatItem {
+    id: number
+    roomId: string
+    createdAt: string
+    updatedAt: string
+}
+
+export interface IOrderItemData {
+    product_id: number,
+    quantity: number,
+    size: number,
+    color: string,
+}
+
+export interface IOrderData {
+    items: IOrderItemData[],
+    shipping_address: string,
+    billing_address: string,
+    payment_method: string,
+    notes?: string,
+    currency: string,
 }

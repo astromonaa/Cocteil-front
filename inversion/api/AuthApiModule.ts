@@ -2,10 +2,9 @@ import type IAuthApiModuleInterface from "~/inversion/interfaces/AuthApiModule.i
 import type {IRestModuleInterface} from "~/inversion/interfaces/RestModule.interface";
 import {injectable, inject} from "inversify";
 import {TYPES} from "~/inversion/types/types";
-import {AxiosError} from "axios";
 
 
-const getError = (e:AxiosError) => new Error(e?.response?.data?.message || e.message)
+const getError = (e:any) => new Error(e?.response?.data?.message || e.message)
 
 @injectable()
 export class AuthApiModule implements IAuthApiModuleInterface {
@@ -35,7 +34,7 @@ export class AuthApiModule implements IAuthApiModuleInterface {
 				url: '/api/users/login',
 				data: {email, password}
 			})
-		}catch(e:AxiosError) {
+		}catch(e:any) {
 			await Promise.reject(getError(e))
 		}
 	}
